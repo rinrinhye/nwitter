@@ -1,7 +1,11 @@
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateAccount() {
+	const navigate = useNavigate();
 	const [isLoading, setLoading] = useState(false);
 	const [data, setData] = useState({ name: "", email: "", password: "" });
 	const [error, setError] = useState("");
@@ -14,23 +18,42 @@ export default function CreateAccount() {
 		});
 	};
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (
+			isLoading ||
+			data.name === "" ||
+			data.email === "" ||
+			data.password === ""
+		)
+			return;
 
 		try {
+			setLoading(true);
 			// 1. 계정 생성
+
+			const credentials = await createUserWithEmailAndPassword(
+				auth,
+				data.email,
+				data.password
+			);
+			console.log(credentials);
+			console.log(credentials.user);
+
 			// 2. 프로필 이름 설정
+			await updateProfile(credentials.user, { displayName: data.name });
+
 			// 3. 메인페이지로 ㄱㄱ!
+			navigate("/");
 		} catch (e) {
 		} finally {
+			setLoading(false);
 		}
-
-		console.log(data);
 	};
 
 	return (
 		<Wrapper>
-			<Title />
+			<Title>JJJJoin</Title>
 			<Form onSubmit={onSubmit}>
 				<Input
 					name="name"
