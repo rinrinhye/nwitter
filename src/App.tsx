@@ -8,6 +8,7 @@ import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/LoadingScreen";
+import { auth } from "./firebase";
 
 const GlobalStyles = createGlobalStyle`
 	${reset}
@@ -47,6 +48,7 @@ function App() {
 	const [isLoading, setLoading] = useState(true);
 	const init = async () => {
 		//파이어베이스가 로그인체크 끝나면
+		auth.authStateReady();
 		setLoading(false);
 	};
 
